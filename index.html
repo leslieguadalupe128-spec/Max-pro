@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para ti 🌼</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;width:100%;height:100%;overflow:hidden}
+  body{
+    font-family: Georgia, "Times New Roman", serif;
+    background:#07080b;
+    color:#fff8df;
+  }
+  button{font:inherit}
+
+  .scene{
+    position:fixed;inset:0;display:grid;place-items:center;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 50% 80%, rgba(255,196,45,.10), transparent 35%),
+      linear-gradient(#06070a,#11100b);
+  }
+
+  .stars,.petals,.garden{position:absolute;inset:0;pointer-events:none}
+  .stars span{
+    position:absolute;width:2px;height:2px;border-radius:50%;
+    background:#fff8cf;opacity:.55;
+    animation:twinkle 2.8s ease-in-out infinite;
+  }
+  @keyframes twinkle{50%{opacity:.12;transform:scale(.4)}}
+
+  .card{
+    position:relative;z-index:10;width:min(90vw,520px);
+    min-height:330px;padding:24px 28px 30px;
+    transform:translateY(-8vh);
+    display:flex;flex-direction:column;justify-content:center;align-items:center;
+    text-align:center;border:1px solid rgba(255,218,93,.18);
+    border-radius:28px;
+    background:rgba(16,16,14,.72);
+    backdrop-filter:blur(10px);
+    box-shadow:0 20px 70px rgba(0,0,0,.5);
+    transition:opacity .8s, transform .8s;
+  }
+  .eyebrow{font-size:.78rem;letter-spacing:.3em;text-transform:uppercase;color:#e7c85d;margin-bottom:16px}
+  h1{font-size:clamp(2rem,8vw,3.4rem);margin:0 0 15px;line-height:1.05}
+  p{font-size:clamp(1rem,4.2vw,1.25rem);line-height:1.65;margin:8px 0;max-width:430px}
+  .soft{color:#d7d0b7}
+  .hidden{display:none!important}
+
+  .btn{
+    margin-top:25px;padding:13px 25px;border-radius:999px;
+    border:1px solid #e5c94e;background:#e5c94e;color:#191600;
+    cursor:pointer;font-weight:bold;
+    box-shadow:0 0 25px rgba(229,201,78,.15);
+    transition:.25s;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 0 35px rgba(229,201,78,.35)}
+  .btn:active{transform:scale(.97)}
+
+  .seed{
+    position:absolute;bottom:17%;left:50%;width:10px;height:18px;
+    border-radius:70% 40% 70% 40%;background:#795a2c;
+    transform:translateX(-50%);
+  }
+  .stem{
+    position:absolute;bottom:17%;left:50%;width:5px;height:0;
+    background:linear-gradient(#71983c,#405d25);transform-origin:bottom;
+    border-radius:10px;transition:height 2.4s ease;
+  }
+  .stem.grow{height:145px}
+  .leaf{
+    position:absolute;width:48px;height:23px;background:#678e35;
+    border-radius:100% 0 100% 0;opacity:0;transition:opacity .7s;
+  }
+  .leaf.left{left:calc(50% - 48px);bottom:23%}
+  .leaf.right{left:50%;bottom:29%;transform:scaleX(-1)}
+  .leaf.show{opacity:1}
+
+  .flower{
+    position:absolute;left:50%;bottom:calc(17% + 135px);
+    width:118px;height:118px;transform:translateX(-50%) scale(0);
+    transition:transform 1.2s cubic-bezier(.2,1.5,.4,1);
+  }
+  .flower.bloom{transform:translateX(-50%) scale(1)}
+  .petal{
+    position:absolute;left:50%;top:50%;width:38px;height:65px;
+    transform-origin:50% 100%;border-radius:55% 55% 48% 48%;
+    background:linear-gradient(#ffe66b,#f2bd19);
+    box-shadow:0 0 18px rgba(255,208,45,.25);
+  }
+  .petal:nth-child(1){transform:translate(-50%,-100%) rotate(0deg)}
+  .petal:nth-child(2){transform:translate(-50%,-100%) rotate(45deg)}
+  .petal:nth-child(3){transform:translate(-50%,-100%) rotate(90deg)}
+  .petal:nth-child(4){transform:translate(-50%,-100%) rotate(135deg)}
+  .petal:nth-child(5){transform:translate(-50%,-100%) rotate(180deg)}
+  .petal:nth-child(6){transform:translate(-50%,-100%) rotate(225deg)}
+  .petal:nth-child(7){transform:translate(-50%,-100%) rotate(270deg)}
+  .petal:nth-child(8){transform:translate(-50%,-100%) rotate(315deg)}
+  .center{
+    position:absolute;left:50%;top:50%;width:38px;height:38px;
+    transform:translate(-50%,-50%);border-radius:50%;background:#5c3a13;
+    box-shadow:0 0 0 5px rgba(95,57,10,.15);
+  }
+
+  .message{opacity:0;transform:translateY(18px);transition:1s}
+  .message.show{opacity:1;transform:none}
+
+  .field-flower{
+    position:absolute;bottom:-20px;width:8px;height:85px;background:#4b6e2a;
+    transform-origin:bottom;opacity:0;
+    animation:rise 1s forwards;
+  }
+  .field-flower:before{
+    content:"";position:absolute;top:-25px;left:50%;
+    width:34px;height:34px;transform:translateX(-50%);
+    border-radius:50%;background:#f3c51e;
+    box-shadow:
+      -12px 0 0 #ffe76a,12px 0 0 #ffe76a,
+      0 -12px 0 #ffe76a,0 12px 0 #ffe76a;
+  }
+  @keyframes rise{to{opacity:.85}}
+
+  .falling-petal{
+    position:absolute;top:-30px;width:10px;height:16px;
+    border-radius:70% 30% 70% 30%;background:#f6d84b;
+    opacity:.8;animation:fall linear forwards;
+  }
+  @keyframes fall{
+    to{transform:translate3d(var(--x),110vh,0) rotate(720deg);opacity:0}
+  }
+
+  .letter{
+    max-height:0;overflow:hidden;transition:max-height 1.2s ease;
+  }
+  .letter.open{max-height:500px}
+
+  .signature{
+    margin-top:20px;font-size:1.15rem;color:#f3d55b;
+    font-style:italic;
+  }
+
+  .hint{font-size:.78rem;color:#8e8a7c;margin-top:20px}
+
+
+  .bouquet{
+    position:absolute;z-index:5;left:50%;bottom:8%;
+    width:min(86vw,420px);height:330px;
+    transform:translate(-50%,45%) scale(.45);
+    opacity:0;pointer-events:none;
+    transition:transform 1.7s cubic-bezier(.18,1.25,.3,1),opacity 1s ease;
+  }
+  .bouquet.show{transform:translate(-50%,0) scale(1);opacity:1}
+  .bouquet-stems{position:absolute;left:50%;bottom:8px;width:210px;height:235px;transform:translateX(-50%)}
+  .bouquet-stems span{
+    position:absolute;bottom:0;left:50%;width:6px;height:205px;
+    border-radius:10px;background:linear-gradient(#6d9639,#3e5d25);
+    transform-origin:bottom;
+  }
+  .bouquet-stems span:nth-child(1){transform:rotate(-30deg);height:185px}
+  .bouquet-stems span:nth-child(2){transform:rotate(-20deg);height:220px}
+  .bouquet-stems span:nth-child(3){transform:rotate(-10deg);height:205px}
+  .bouquet-stems span:nth-child(4){transform:rotate(0deg);height:225px}
+  .bouquet-stems span:nth-child(5){transform:rotate(10deg);height:210px}
+  .bouquet-stems span:nth-child(6){transform:rotate(20deg);height:195px}
+  .bouquet-stems span:nth-child(7){transform:rotate(30deg);height:180px}
+
+  .bouquet-blooms{position:absolute;left:50%;top:15px;width:290px;height:200px;transform:translateX(-50%)}
+  .bouquet-blooms i{
+    position:absolute;width:46px;height:46px;border-radius:50%;
+    background:#f3c51e;
+    box-shadow:
+      -15px 0 0 #ffe66b,15px 0 0 #ffe66b,
+      0 -15px 0 #ffe66b,0 15px 0 #ffe66b,
+      0 0 20px rgba(255,213,49,.2);
+    opacity:0;transform:scale(.2);
+    transition:opacity .7s ease,transform .9s cubic-bezier(.2,1.5,.4,1);
+  }
+  .bouquet.show .bouquet-blooms i{opacity:1;transform:scale(1)}
+  .bouquet-blooms i:nth-child(1){left:30px;top:65px;transition-delay:.1s}
+  .bouquet-blooms i:nth-child(2){left:70px;top:28px;transition-delay:.2s}
+  .bouquet-blooms i:nth-child(3){left:112px;top:55px;transition-delay:.3s}
+  .bouquet-blooms i:nth-child(4){left:123px;top:5px;transition-delay:.4s}
+  .bouquet-blooms i:nth-child(5){left:165px;top:42px;transition-delay:.5s}
+  .bouquet-blooms i:nth-child(6){left:205px;top:72px;transition-delay:.6s}
+  .bouquet-blooms i:nth-child(7){left:82px;top:90px;transition-delay:.7s}
+
+  .bouquet-wrap{
+    position:absolute;left:50%;bottom:0;width:155px;height:115px;
+    transform:translateX(-50%);
+    background:linear-gradient(135deg,#e6c43e,#b48b18);
+    clip-path:polygon(18% 0,82% 0,100% 100%,0 100%);
+    border-radius:0 0 22px 22px;
+    filter:drop-shadow(0 10px 15px rgba(0,0,0,.3));
+  }
+  .bouquet-wrap:after{
+    content:"";position:absolute;left:50%;top:0;width:18px;height:115px;
+    transform:translateX(-50%) rotate(8deg);background:rgba(255,238,123,.3);
+  }
+
+  .bouquet-card{
+    position:absolute;right:-5px;bottom:75px;width:175px;min-height:92px;
+    padding:17px 13px;text-align:center;
+    background:#fff8df;color:#59440e;
+    font-family:"Segoe Print","Comic Sans MS",cursive;
+    font-size:14px;line-height:1.35;
+    transform:rotate(5deg);
+    box-shadow:0 7px 18px rgba(0,0,0,.28);
+    opacity:0;transition:opacity .8s ease 1.25s,transform .8s ease 1.25s;
+  }
+  .bouquet.show .bouquet-card{opacity:1;transform:rotate(5deg) translateY(-5px)}
+  .bouquet-card b{font-size:17px}
+
+  .fade-for-bouquet{
+    opacity:0!important;
+    transform:scale(.9)!important;
+    pointer-events:none!important;
+    transition:opacity 1s,transform 1s;
+  }
+
+  @media(max-height:650px){
+    .card{min-height:280px;padding:20px 25px 25px;transform:translateY(-4vh)}
+    .flower{bottom:calc(17% + 115px)}
+    .stem.grow{height:125px}
+  }
+</style>
+</head>
+<body>
+<div class="scene" id="scene">
+  <div class="stars" id="stars"></div>
+  <div class="garden" id="garden"></div>
+  <div class="bouquet" id="bouquet">
+    <div class="bouquet-stems">
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="bouquet-blooms">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+    <div class="bouquet-wrap"></div>
+    <div class="bouquet-card">Te dije que iba a mejorar,<br><b>muakmuak</b> ♡</div>
+  </div>
+  <div class="petals" id="petals"></div>
+
+  <div class="seed" id="seed"></div>
+  <div class="stem" id="stem"></div>
+  <div class="leaf left" id="leaf1"></div>
+  <div class="leaf right" id="leaf2"></div>
+
+  <div class="flower" id="flower" aria-hidden="true">
+    <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
+    <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
+    <div class="center"></div>
+  </div>
+
+  <main class="card" id="card">
+    <section id="intro">
+      <div class="eyebrow">para ti</div>
+      <h1>Oye… tengo algo para ti.</h1>
+      <p class="soft">No es mucho. Solo quería hacerte una pequeña sorpresa.</p>
+      <button class="btn" id="openBtn">✦ abrir ✦</button>
+    </section>
+
+    <section id="story" class="hidden">
+      <div class="message" id="m1">
+        <p>Hay cosas que, sin saber por qué,<br>terminan recordándome a ti.</p>
+      </div>
+      <div class="message hidden" id="m2">
+        <p>Y entre ellas…</p>
+        <h1>las flores amarillas. 🌼</h1>
+      </div>
+      <button class="btn hidden" id="nextBtn">seguir ✦</button>
+    </section>
+
+    <section id="final" class="hidden">
+      <div class="eyebrow">una cosita más</div>
+      <h1>¿Ya sabes quién hizo esto?</h1>
+      <button class="btn" id="yesBtn">sí ♡</button>
+      <div class="letter" id="letter">
+        <p>Porque quería regalarte algo que no se marchitara.</p>
+        <p>Algo que pudieras abrir cuando quisieras y recordar que, aunque a veces las cosas se pongan raras, hay cariño que sigue ahí.</p>
+        <p>Espero que esta pequeña flor te saque aunque sea una sonrisa.</p>
+        <div class="signature">— Maxi ♡</div>
+      </div>
+      <div class="hint" id="hint">toca la pantalla para hacer aparecer más flores</div>
+    </section>
+  </main>
+</div>
+
+<script>
+  const $ = id => document.getElementById(id);
+
+  // Estrellitas
+  for(let i=0;i<70;i++){
+    const s=document.createElement("span");
+    s.style.left=Math.random()*100+"%";
+    s.style.top=Math.random()*100+"%";
+    s.style.animationDelay=(Math.random()*3)+"s";
+    $("stars").appendChild(s);
+  }
+
+  function petals(n=25){
+    for(let i=0;i<n;i++){
+      const p=document.createElement("div");
+      p.className="falling-petal";
+      p.style.left=Math.random()*100+"%";
+      p.style.setProperty("--x",(Math.random()*240-120)+"px");
+      p.style.animationDuration=(3.5+Math.random()*4)+"s";
+      p.style.animationDelay=(Math.random()*1.8)+"s";
+      $("petals").appendChild(p);
+      setTimeout(()=>p.remove(),8500);
+    }
+  }
+
+  function field(){
+    for(let i=0;i<24;i++){
+      const f=document.createElement("div");
+      f.className="field-flower";
+      f.style.left=(Math.random()*105-2)+"%";
+      f.style.height=(45+Math.random()*80)+"px";
+      f.style.animationDelay=(Math.random()*1.2)+"s";
+      $("garden").appendChild(f);
+    }
+  }
+
+  $("openBtn").onclick=()=>{
+    $("intro").classList.add("hidden");
+    $("story").classList.remove("hidden");
+
+    setTimeout(()=>$("stem").classList.add("grow"),250);
+    setTimeout(()=>$("leaf1").classList.add("show"),1100);
+    setTimeout(()=>$("leaf2").classList.add("show"),1400);
+    setTimeout(()=>$("flower").classList.add("bloom"),2300);
+
+    setTimeout(()=>{
+      $("m1").classList.add("show");
+    },3300);
+
+    setTimeout(()=>{
+      $("m2").classList.remove("hidden");
+      setTimeout(()=>$("m2").classList.add("show"),50);
+      petals(12);
+    },5000);
+
+    setTimeout(()=>{
+      $("seed").classList.add("fade-for-bouquet");
+      $("stem").classList.add("fade-for-bouquet");
+      $("leaf1").classList.add("fade-for-bouquet");
+      $("leaf2").classList.add("fade-for-bouquet");
+      $("flower").classList.add("fade-for-bouquet");
+      $("bouquet").classList.add("show");
+      petals(30);
+    },6500);
+
+    setTimeout(()=>{
+      $("nextBtn").classList.remove("hidden");
+    },7900);
+  };
+
+  $("nextBtn").onclick=()=>{
+    $("story").classList.add("hidden");
+    $("final").classList.remove("hidden");
+    $("card").style.background="rgba(20,18,10,.62)";
+    field();
+    petals(35);
+  };
+
+  $("yesBtn").onclick=()=>{
+    $("yesBtn").classList.add("hidden");
+    $("letter").classList.add("open");
+    $("hint").textContent="♡";
+    field();
+    petals(55);
+  };
+
+  // Toques: cada toque crea una florcita.
+  $("scene").addEventListener("click",(e)=>{
+    if(!$("letter").classList.contains("open")) return;
+    const f=document.createElement("div");
+    f.className="field-flower";
+    f.style.left=e.clientX+"px";
+    f.style.bottom="0";
+    f.style.height=(35+Math.random()*65)+"px";
+    $("garden").appendChild(f);
+    setTimeout(()=>f.remove(),3000);
+  });
+</script>
+</body>
+</html>
